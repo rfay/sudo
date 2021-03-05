@@ -10,21 +10,36 @@ jobs:
 
   build:
     runs-on: windows-latest
+    defaults:
+     run:
+       shell: bash
     steps:
       - uses: actions/checkout@v2
-
       - name: Set up Go
         uses: actions/setup-go@v2
       - name: Install osslsigncode
         run: |
-          curl -sSL -o /tmp/osslsigncode.zip https://github.com/mtrojnar/osslsigncode/releases/download/2.1/osslsigncode_2.1_windows.zip
-          mkdir -p /usr/local/bin && pushd /usr/local/bin >/dev/null
-          unzip -j /tmp/osslsigncode.zip
-          popd
-          osslsigncode --version
+          echo "$PWD/.local/bin" >> $GITHUB_PATH
+          echo $GITHUB_PATH
+          set -eu
+          mkdir -p .local/bin && cd .local/bin
+          curl -sSL https://github.com/mtrojnar/osslsigncode/releases/download/2.1/osslsigncode_2.1_windows.zip -o osslsigncode.zip
+          ls -l osslsigncode.zip
+          unzip -j osslsigncode.zip
+          ./osslsigncode --version || true
+
+      - name: Check osslsigncode
+        run: osslsigncode --version || true
 
       - name: Build
-        run: make darwin_amd64_signed
+        run: make windows_amd64_signed
 
       - name: Test
-        run: go test -v ./...
+        run: make test
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: sudo-executable
+          path: ".gotmp/bin/windows_amd64/sudo*.exe"
+          retention-days: 7
