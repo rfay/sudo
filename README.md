@@ -2,12 +2,13 @@
 
 sudo for windows
 
-[![Build status](https://ci.appveyor.com/api/projects/status/xyxiefgm9giyags3?svg=true)](https://ci.appveyor.com/project/mattn/sudo)
+Forked from https://github.com/mattn/sudo 2021-03-05 in order to make a signed build.
 
 ## Usage
 
 ```
 C:\>sudo cmd /c dir
+sudo.exe cmd /c dir
 ```
 
 Then, you'll see the UAC dialog.
@@ -47,17 +48,21 @@ sudo
 ## Installation
 
 ```
-go get github.com/mattn/sudo
+go get github.com/drud/sudo
+```
+or
+```bash
+make
 ```
 
-requirement go1.8 or later.
+requirement go1.16 or later.
 
-Or download from [release](https://github.com/mattn/sudo/releases) tab.
+Or download from [releases](https://github.com/drud/sudo/releases).
 
 ## License
 
 MIT
 
-## Author
+## Original Author
 
 Yasuhiro Matsumoto (a.k.a. mattn)

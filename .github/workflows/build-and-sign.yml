@@ -1,0 +1,30 @@
+name: build-and-sign
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Go
+        uses: actions/setup-go@v2
+      - name: Install osslsigncode
+        run: |
+          curl -sSL -o /tmp/osslsigncode.zip https://github.com/mtrojnar/osslsigncode/releases/download/2.1/osslsigncode_2.1_windows.zip
+          mkdir -p /usr/local/bin && pushd /usr/local/bin >/dev/null
+          unzip -j /tmp/osslsigncode.zip
+          popd
+          osslsigncode --version
+
+      - name: Build
+        run: make darwin_amd64_signed
+
+      - name: Test
+        run: go test -v ./...
